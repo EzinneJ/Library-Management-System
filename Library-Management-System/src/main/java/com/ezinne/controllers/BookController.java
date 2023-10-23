@@ -20,11 +20,16 @@ import java.util.List;
 public class BookController {
     private final BookService bookService;
 
-    @GetMapping()
-    public ResponseEntity<List<Book>> findByCategory(@RequestParam Category category,
-                                                     @RequestHeader String email){
-        List<Book> bookByCategory = bookService.findByCategory(category, email);
+    @GetMapping("/")
+    public ResponseEntity<List<Book>> findByCategory(@RequestParam Category category){
+        List<Book> bookByCategory = bookService.findByCategory(category);
         return ResponseEntity.ok(bookByCategory);
+    }
+
+    @GetMapping("/find")
+    public ResponseEntity<List<Book>> findByName(@RequestParam String name){
+        List<Book> bookByName = bookService.findByName(name);
+        return ResponseEntity.ok(bookByName);
     }
 
     @GetMapping("/all")
@@ -35,9 +40,8 @@ public class BookController {
 
     @PostMapping("/add-book")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<String> addBook(@RequestHeader String email,
-                                        @RequestBody BookRequest request){
-        String book = bookService.addBook(email, request);
+    public ResponseEntity<String> addBook(@RequestBody BookRequest request){
+        String book = bookService.addBook(request);
         if (book.contains("Book added successfully")) {
             return ResponseEntity.ok(book);
         }
@@ -47,9 +51,8 @@ public class BookController {
     @PutMapping("/edit")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> editBook(@RequestParam Long bookId,
-                                         @RequestHeader String email,
                                          @RequestBody Book newBookDetails){
-        String response = bookService.editBook(bookId, email, newBookDetails);
+        String response = bookService.editBook(bookId, newBookDetails);
         if (response.contains("Book edited successfully")){
             return ResponseEntity.ok(response);
         }
@@ -58,9 +61,8 @@ public class BookController {
 
     @DeleteMapping("delete")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<String> deleteBook(@RequestParam Long bookId,
-                                         @RequestHeader String email){
-        String response = bookService.deleteBook(email, bookId);
+    public ResponseEntity<String> deleteBook(@RequestParam Long bookId){
+        String response = bookService.deleteBook(bookId);
         if (response.contains("Book deleted successfully")){
             return ResponseEntity.ok(response);
         }
