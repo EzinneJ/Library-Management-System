@@ -10,4 +10,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Optional<Book> findByCategory(Category category);
 
     Optional<Book> findByIsbn(String isbn);
+
+    Optional<Book> findByName(String name);
 }

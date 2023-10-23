@@ -1,10 +1,8 @@
 package com.ezinne.services;
 
 import com.ezinne.dtos.BookRequest;
-import com.ezinne.entities.AppUser;
 import com.ezinne.entities.Book;
 import com.ezinne.entities.Category;
-import com.ezinne.repositories.AppUserRepository;
 import com.ezinne.repositories.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,14 +14,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BookService {
     private final BookRepository bookRepository;
-    private final AppUserRepository appUserRepository;
-
     public List<Book> listOfBooks() {
         return bookRepository.findAll();
     }
 
-    public List<Book> findByCategory(Category category, String email) {
-        validateEmail(email);
+    public List<Book> findByCategory(Category category) {
         Optional<Book> bookByCategory = bookRepository.findByCategory(category);
         if (bookByCategory.isEmpty()) {
             return List.of();
@@ -32,8 +27,16 @@ public class BookService {
         return List.of(books);
     }
 
-    public String addBook(String email, BookRequest request) {
-        validateEmail(email);
+    public List<Book> findByName(String name) {
+        Optional<Book> bookByName = bookRepository.findByName(name);
+        if (bookByName.isEmpty()) {
+            return List.of();
+        }
+        Book books = bookByName.get();
+        return List.of(books);
+    }
+
+    public String addBook(BookRequest request) {
             Book book = new Book();
             book.setName(request.getName());
             book.setIsbn(request.getIsbn());
@@ -43,8 +46,7 @@ public class BookService {
             return "Book added successfully";
     }
 
-    public String editBook(Long bookId, String email, Book newBookDetails) {
-        validateEmail(email);
+    public String editBook(Long bookId,  Book newBookDetails) {
             Optional<Book> optionalBook = bookRepository.findById(bookId);
             if (optionalBook.isEmpty()) {
                 return "Book not found";
@@ -60,8 +62,7 @@ public class BookService {
             return "Book edited successfully";
     }
 
-    public String deleteBook(String email, Long bookId) {
-        validateEmail(email);
+    public String deleteBook(Long bookId) {
             Optional<Book> optionalBook = bookRepository.findById(bookId);
             if (optionalBook.isEmpty()) {
                 return "Book not found";
@@ -69,12 +70,5 @@ public class BookService {
             bookRepository.deleteById(bookId);
             return "Book deleted successfully";
 
-    }
-    private String validateEmail(String email) {
-        Optional<AppUser> emailExist = appUserRepository.findByEmail(email);
-        if (emailExist.isPresent()) {
-            return email;
-        }
-        return "User does not exist";
     }
 }
