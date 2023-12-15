@@ -4,7 +4,6 @@ import com.ezinne.dtos.BookRequest;
 import com.ezinne.entities.Book;
 import com.ezinne.entities.Category;
 import com.ezinne.services.BookService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -13,11 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/books")
 @Validated
 public class BookController {
     private final BookService bookService;
+
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
+    }
 
     @GetMapping("/")
     @PreAuthorize("hasRole('client_user')")

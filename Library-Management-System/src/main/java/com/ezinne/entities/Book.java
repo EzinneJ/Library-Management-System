@@ -7,8 +7,8 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
-@Entity(name = "books")
-@Table
+@Entity
+@Table(name = "books")
 @Getter
 @Setter
 @NoArgsConstructor

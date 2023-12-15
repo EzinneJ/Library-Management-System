@@ -11,9 +11,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class BookService {
     private final BookRepository bookRepository;
+
+    public BookService(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
+
     public List<Book> listOfBooks() {
         return bookRepository.findAll();
     }
@@ -53,7 +57,6 @@ public class BookService {
             }
             Book book = optionalBook.get();
 
-            newBookDetails.setBookId(book.getBookId());
             newBookDetails.setName(book.getName());
             newBookDetails.setIsbn(book.getIsbn());
             newBookDetails.setAuthors(book.getAuthors());
